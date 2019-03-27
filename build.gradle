@@ -1,6 +1,8 @@
 plugins {
     id 'java-library'
     id 'maven'
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
 group = projectGroup
@@ -23,4 +25,12 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+jacocoTestReport {
+    reports {
+        csv.enabled = false
+        html.enabled = true
+        xml.enabled = true // coveralls plugin depends on xml format report
+    }
 }
