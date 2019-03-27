@@ -46,6 +46,17 @@ class GarbageTest {
     }
 
     @Test
+    void testOffOnHoliday() {
+        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
+            Garbage classUnderTest = new Garbage(globalConfig(),
+                    new UserGarbageConfiguration(dayOfWeek, null, FIRST_WEEK));
+            final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-27"));
+            assertThat(result.isGarbageDay(), is(false));
+            assertThat(result.isRecyclingDay(), is(false));
+        }
+    }
+
+    @Test
     void testGarbageAndRecyclingOnNormalDay() {
         Garbage classUnderTest = new Garbage(globalConfig(),
                 new UserGarbageConfiguration(DayOfWeek.THURSDAY, null, FIRST_WEEK));
