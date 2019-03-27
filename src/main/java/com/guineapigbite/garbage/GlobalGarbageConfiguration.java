@@ -2,6 +2,7 @@ package com.guineapigbite.garbage;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 import static java.util.Collections.emptySet;
@@ -9,18 +10,19 @@ import static java.util.Collections.emptySet;
 public final class GlobalGarbageConfiguration {
     private final DayOfWeek resetDay;
     private final LocalDate start;
-    private final Set<String> garbageWeeks;
-    private final Set<String> recyclingWeeks;
+    private final List<String> garbageWeeks;
+    private final List<String> recyclingWeeks;
     private final Set<LocalDate> leapDays;
 
     public GlobalGarbageConfiguration(final DayOfWeek resetDay,
                                       final LocalDate start,
-                                      final Set<String> garbageWeeks,
-                                      final Set<String> recyclingWeeks, final Set<LocalDate> leapDays) {
+                                      final List<String> garbageWeeks,
+                                      final List<String> recyclingWeeks,
+                                      final Set<LocalDate> leapDays) {
         this.resetDay = resetDay;
         this.start = start;
-        this.garbageWeeks = garbageWeeks == null || garbageWeeks.size() <= 1 ? emptySet() : garbageWeeks;
-        this.recyclingWeeks = recyclingWeeks == null || recyclingWeeks.size() <= 1 ? emptySet() : recyclingWeeks;
+        this.garbageWeeks = garbageWeeks;
+        this.recyclingWeeks = recyclingWeeks;
         this.leapDays = leapDays == null ? emptySet() : leapDays;
     }
 
@@ -36,11 +38,11 @@ public final class GlobalGarbageConfiguration {
         return leapDays;
     }
 
-    public Set<String> getGarbageWeeks() {
+    public List<String> getGarbageWeeks() {
         return garbageWeeks;
     }
 
-    public Set<String> getRecyclingWeeks() {
+    public List<String> getRecyclingWeeks() {
         return recyclingWeeks;
     }
 }

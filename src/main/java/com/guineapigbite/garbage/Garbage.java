@@ -2,23 +2,29 @@ package com.guineapigbite.garbage;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.stream.Collectors.toSet;
 
 public class Garbage {
+    private static final int DAYS_PER_WEEK = 7;
+
     private final GlobalGarbageConfiguration globalConfig;
     private final UserGarbageConfiguration userConfig;
     private final Set<LocalDate> leapDays;
+    private final LocalDate resetOnOrBeforeStart;
 
     public Garbage(final GlobalGarbageConfiguration globalConfig, final UserGarbageConfiguration userConfig) {
         this.globalConfig = globalConfig;
         this.userConfig = userConfig;
-        this.leapDays = getAllLeakDays(globalConfig);
+        this.leapDays = getAllLeapDays(globalConfig);
+        this.resetOnOrBeforeStart = getResetDayEqualOrBeforeStart(globalConfig);
     }
 
-    private static Set<LocalDate> getAllLeakDays(final GlobalGarbageConfiguration config) {
+    private static Set<LocalDate> getAllLeapDays(final GlobalGarbageConfiguration config) {
         return config.getLeapDays().stream()
                 .flatMap(holiday -> daysUntilReset(holiday, config.getResetDay()))
                 .collect(toSet());
@@ -28,13 +34,21 @@ public class Garbage {
         return Stream.iterate(holiday, day -> day.getDayOfWeek() != reset, day -> day.plusDays(1)).skip(1);
     }
 
+    private static LocalDate getResetDayEqualOrBeforeStart(final GlobalGarbageConfiguration config) {
+        LocalDate date = config.getStart();
+        while (date.getDayOfWeek() != config.getResetDay()) {
+            date = date.minusDays(1);
+        }
+        return date;
+    }
+
     public GarbageDay compute(final LocalDate date) {
-        // TODO skip weeks
         final int plusDays = isLeapForward(date) ? 1 : 0;
         final DayOfWeek userDayOfWeek = userConfig.getDayOfWeek().plus(plusDays);
+        final boolean dayOfWeekMatch = !isHoliday(date) && date.getDayOfWeek() == userDayOfWeek;
         return new GarbageDay(date,
-                !isHoliday(date) && date.getDayOfWeek() == userDayOfWeek,
-                !isHoliday(date) && date.getDayOfWeek() == userDayOfWeek);
+                dayOfWeekMatch && isUsersGarbageWeek(date),
+                dayOfWeekMatch && isUsersRecyclingWeek(date));
     }
 
     private boolean isHoliday(final LocalDate date) {
@@ -43,5 +57,28 @@ public class Garbage {
 
     private boolean isLeapForward(final LocalDate date) {
         return leapDays.contains(date);
+    }
+
+    private boolean isUsersGarbageWeek(final LocalDate date) {
+        return isUsersWeek(date, globalConfig.getGarbageWeeks(), userConfig.getGarbageWeek());
+    }
+
+    private boolean isUsersRecyclingWeek(final LocalDate date) {
+        return isUsersWeek(date, globalConfig.getRecyclingWeeks(), userConfig.getRecyclingWeek());
+    }
+
+    private boolean isUsersWeek(final LocalDate date, final List<String> weeks, final String usersWeek) {
+        return date.isBefore(globalConfig.getStart()) || weeks == null || weeks.size() <= 1 ||
+                getWeek(date, weeks).equals(usersWeek);
+    }
+
+    private String getWeek(final LocalDate date, final List<String> weeks) {
+        return weeks.get(getWeekIndex(date, weeks.size()));
+    }
+
+    private int getWeekIndex(final LocalDate date, final int weekCount) {
+        final long daysSinceStart = DAYS.between(resetOnOrBeforeStart, date.plusDays(1));
+        final double weeksSinceStart = daysSinceStart / (double) DAYS_PER_WEEK;
+        return (int) Math.floor(weeksSinceStart) % weekCount;
     }
 }

@@ -2,6 +2,7 @@ package com.guineapigbite.garbage;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ class GarbageTest {
                 DayOfWeek.SUNDAY,
                 LocalDate.parse("2019-05-01"),
                 null,
-                Set.of(FIRST_WEEK, SECOND_WEEK),
+                List.of(FIRST_WEEK, SECOND_WEEK),
                 Set.of(
                         LocalDate.parse("2019-05-27"),
                         LocalDate.parse("2019-07-04"),
