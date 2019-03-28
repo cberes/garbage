@@ -3,10 +3,12 @@ package com.guineapigbite.garbage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toSet;
 
 public class Garbage {
@@ -25,9 +27,13 @@ public class Garbage {
     }
 
     private static Set<LocalDate> getAllLeapDays(final GlobalGarbageConfiguration config) {
-        return config.getLeapDays().stream()
+        return getLeapDays(config).stream()
                 .flatMap(holiday -> daysUntilReset(holiday, config.getResetDay()))
                 .collect(toSet());
+    }
+
+    private static Set<LocalDate> getLeapDays(final GlobalGarbageConfiguration config) {
+        return Optional.ofNullable(config.getLeapDays()).orElse(emptySet());
     }
 
     private static Stream<LocalDate> daysUntilReset(final LocalDate holiday, final DayOfWeek reset) {
@@ -52,7 +58,7 @@ public class Garbage {
     }
 
     private boolean isHoliday(final LocalDate date) {
-        return globalConfig.getLeapDays().contains(date);
+        return getLeapDays(globalConfig).contains(date);
     }
 
     private boolean isLeapForward(final LocalDate date) {

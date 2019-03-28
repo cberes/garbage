@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Collections.emptySet;
-
 public final class GlobalGarbageConfiguration {
     private final DayOfWeek resetDay;
     private final LocalDate start;
@@ -23,7 +21,7 @@ public final class GlobalGarbageConfiguration {
         this.start = start;
         this.garbageWeeks = garbageWeeks;
         this.recyclingWeeks = recyclingWeeks;
-        this.leapDays = leapDays == null ? emptySet() : leapDays;
+        this.leapDays = leapDays;
     }
 
     public DayOfWeek getResetDay() {
