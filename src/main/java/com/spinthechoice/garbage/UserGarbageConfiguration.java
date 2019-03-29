@@ -1,4 +1,4 @@
-package com.guineapigbite.garbage;
+package com.spinthechoice.garbage;
 
 import java.time.DayOfWeek;
 
