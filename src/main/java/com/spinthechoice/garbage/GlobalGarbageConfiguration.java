@@ -46,6 +46,13 @@ public final class GlobalGarbageConfiguration {
         }
 
         /**
+         * @see #setGarbageWeeks(List)
+         */
+        public Builder setGarbageWeeks(final String... garbageWeeks) {
+            return setGarbageWeeks(List.of(garbageWeeks));
+        }
+
+        /**
          * Sets garbage weeks.
          * @param garbageWeeks names of all garbage weeks (if more than 1)
          * @return this builder instance
@@ -53,6 +60,13 @@ public final class GlobalGarbageConfiguration {
         public Builder setGarbageWeeks(final List<String> garbageWeeks) {
             this.garbageWeeks = garbageWeeks;
             return this;
+        }
+
+        /**
+         * @see #setRecyclingWeeks(List)
+         */
+        public Builder setRecyclingWeeks(final String... recyclingWeeks) {
+            return setRecyclingWeeks(List.of(recyclingWeeks));
         }
 
         /**
@@ -66,6 +80,13 @@ public final class GlobalGarbageConfiguration {
         }
 
         /**
+         * @see #setLeapDays(Set)
+         */
+        public Builder setLeapDays(final LocalDate... leapDays) {
+            return setLeapDays(Set.of(leapDays));
+        }
+
+        /**
          * Sets leap days.
          * @param leapDays days when collection is postponed until the following day
          * @return this builder instance
@@ -73,6 +94,13 @@ public final class GlobalGarbageConfiguration {
         public Builder setLeapDays(final Set<LocalDate> leapDays) {
             this.leapDays = leapDays;
             return this;
+        }
+
+        /**
+         * @see #setHolidays(Set)
+         */
+        public Builder setHolidays(final LocalDate... holidays) {
+            return setHolidays(Set.of(holidays));
         }
 
         /**
