@@ -11,6 +11,9 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toSet;
 
+/**
+ * Main garbage class.
+ */
 public class Garbage {
     private static final int DAYS_PER_WEEK = 7;
 
@@ -48,6 +51,11 @@ public class Garbage {
         return date;
     }
 
+    /**
+     * Gets the summary of the customer's garbage collection for the specified date.
+     * @param date date to inspect
+     * @return garbage collection summary
+     */
     public GarbageDay compute(final LocalDate date) {
         final int plusDays = isLeapForward(date) ? 1 : 0;
         final DayOfWeek userDayOfWeek = userConfig.getDayOfWeek().plus(plusDays);
@@ -58,7 +66,11 @@ public class Garbage {
     }
 
     private boolean isHoliday(final LocalDate date) {
-        return getLeapDays(globalConfig).contains(date);
+        return getLeapDays(globalConfig).contains(date) || getHolidays(globalConfig).contains(date);
+    }
+
+    private static Set<LocalDate> getHolidays(final GlobalGarbageConfiguration config) {
+        return Optional.ofNullable(config.getHolidays()).orElse(emptySet());
     }
 
     private boolean isLeapForward(final LocalDate date) {

@@ -30,17 +30,18 @@ class GarbageTest {
     }
 
     private static GlobalGarbageConfiguration globalConfig(final List<String> garbageWeeks) {
-        return new GlobalGarbageConfiguration(
-                DayOfWeek.SUNDAY,
-                LocalDate.parse("2019-05-01"),
-                garbageWeeks,
-                ALL_WEEKS,
-                Set.of(
+        return GlobalGarbageConfiguration.builder()
+                .setResetDay(DayOfWeek.SUNDAY)
+                .setStart(LocalDate.parse("2019-05-01"))
+                .setGarbageWeeks(garbageWeeks)
+                .setRecyclingWeeks(ALL_WEEKS)
+                .setLeapDays(Set.of(
                         LocalDate.parse("2019-05-27"),
                         LocalDate.parse("2019-07-04"),
                         LocalDate.parse("2019-09-02"),
                         LocalDate.parse("2019-11-28"),
-                        LocalDate.parse("2019-12-25")));
+                        LocalDate.parse("2019-12-25")))
+                .build();
     }
 
     @Test
@@ -145,5 +146,33 @@ class GarbageTest {
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-23"));
         assertThat(result.isGarbageDay(), is(true));
         assertThat(result.isRecyclingDay(), is(true));
+    }
+
+    @Test
+    void testOnWhenHolidayWithNoLeap() {
+        final GlobalGarbageConfiguration globalConfig = GlobalGarbageConfiguration.builder()
+                .setResetDay(DayOfWeek.SUNDAY)
+                .setStart(LocalDate.parse("2019-01-01"))
+                .setHolidays(Set.of(LocalDate.parse("2019-12-25"), LocalDate.parse("2020-01-01")))
+                .build();
+        Garbage classUnderTest = new Garbage(globalConfig,
+                new UserGarbageConfiguration(DayOfWeek.THURSDAY, null, null));
+        final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-12-26"));
+        assertThat(result.isGarbageDay(), is(true));
+        assertThat(result.isRecyclingDay(), is(true));
+    }
+
+    @Test
+    void testOffWhenHolidayWithNoLeap() {
+        final GlobalGarbageConfiguration globalConfig = GlobalGarbageConfiguration.builder()
+                .setResetDay(DayOfWeek.SUNDAY)
+                .setStart(LocalDate.parse("2019-01-01"))
+                .setHolidays(Set.of(LocalDate.parse("2019-12-25"), LocalDate.parse("2020-01-01")))
+                .build();
+        Garbage classUnderTest = new Garbage(globalConfig,
+                new UserGarbageConfiguration(DayOfWeek.WEDNESDAY, null, null));
+        final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-12-25"));
+        assertThat(result.isGarbageDay(), is(false));
+        assertThat(result.isRecyclingDay(), is(false));
     }
 }
