@@ -174,4 +174,19 @@ class GarbageTest {
         assertThat(result.isGarbageDay(), is(false));
         assertThat(result.isRecyclingDay(), is(false));
     }
+
+    @Test
+    void testConfigWeekOverrides() {
+        final GlobalGarbageConfiguration globalConfig = GlobalGarbageConfiguration.builder()
+                .setResetDay(DayOfWeek.SUNDAY)
+                .setStart(LocalDate.parse("2019-05-01"))
+                .setGarbageWeeks(FIRST_WEEK, SECOND_WEEK)
+                .setRecyclingWeeks(FIRST_WEEK, SECOND_WEEK)
+                .build();
+        Garbage classUnderTest = new Garbage(globalConfig,
+                new UserGarbageConfiguration(DayOfWeek.TUESDAY, FIRST_WEEK, SECOND_WEEK));
+        final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-21"));
+        assertThat(result.isGarbageDay(), is(false));
+        assertThat(result.isRecyclingDay(), is(true));
+    }
 }
