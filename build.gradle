@@ -9,8 +9,8 @@ group = projectGroup
 version = projectVersion
 ext.isReleaseVersion = !version.endsWith('SNAPSHOT')
 
-sourceCompatibility = 9
-targetCompatibility = 9
+sourceCompatibility = 8
+targetCompatibility = 8
 
 repositories {
     jcenter()

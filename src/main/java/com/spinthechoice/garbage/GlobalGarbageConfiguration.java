@@ -2,8 +2,11 @@ package com.spinthechoice.garbage;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static java.util.Arrays.asList;
 
 /**
  * Configuration for an entire municipality.
@@ -49,7 +52,7 @@ public final class GlobalGarbageConfiguration {
          * @see #setGarbageWeeks(List)
          */
         public Builder setGarbageWeeks(final String... garbageWeeks) {
-            return setGarbageWeeks(List.of(garbageWeeks));
+            return setGarbageWeeks(asList(garbageWeeks));
         }
 
         /**
@@ -66,7 +69,7 @@ public final class GlobalGarbageConfiguration {
          * @see #setRecyclingWeeks(List)
          */
         public Builder setRecyclingWeeks(final String... recyclingWeeks) {
-            return setRecyclingWeeks(List.of(recyclingWeeks));
+            return setRecyclingWeeks(asList(recyclingWeeks));
         }
 
         /**
@@ -83,7 +86,7 @@ public final class GlobalGarbageConfiguration {
          * @see #setLeapDays(Set)
          */
         public Builder setLeapDays(final LocalDate... leapDays) {
-            return setLeapDays(Set.of(leapDays));
+            return setLeapDays(new HashSet<>(asList(leapDays)));
         }
 
         /**
@@ -100,7 +103,7 @@ public final class GlobalGarbageConfiguration {
          * @see #setHolidays(Set)
          */
         public Builder setHolidays(final LocalDate... holidays) {
-            return setHolidays(Set.of(holidays));
+            return setHolidays(new HashSet<>(asList(holidays)));
         }
 
         /**

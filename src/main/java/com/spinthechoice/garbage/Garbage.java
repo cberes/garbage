@@ -40,7 +40,10 @@ public class Garbage {
     }
 
     private static Stream<LocalDate> daysUntilReset(final LocalDate holiday, final DayOfWeek reset) {
-        return Stream.iterate(holiday, day -> day.getDayOfWeek() != reset, day -> day.plusDays(1)).skip(1);
+        // in JDK 9, could do this ...
+        // return Stream.iterate(holiday, day -> day.getDayOfWeek() != reset, day -> day.plusDays(1)).skip(1);
+        final DateResetIterable iterable = new DateResetIterable(holiday, reset);
+        return iterable.stream().skip(1);
     }
 
     private static LocalDate getResetDayEqualOrBeforeStart(final GlobalGarbageConfiguration config) {
