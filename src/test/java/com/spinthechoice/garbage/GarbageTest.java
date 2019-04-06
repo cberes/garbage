@@ -33,7 +33,9 @@ class GarbageTest {
         return GlobalGarbageConfiguration.builder()
                 .setResetDay(DayOfWeek.SUNDAY)
                 .setStart(LocalDate.parse("2019-05-01"))
+                .setGarbageEnabled(true)
                 .setGarbageWeeks(garbageWeeks)
+                .setRecyclingEnabled(true)
                 .setRecyclingWeeks(ALL_WEEKS)
                 .setLeapDays(
                         LocalDate.parse("2019-05-27"),
@@ -153,6 +155,8 @@ class GarbageTest {
         final GlobalGarbageConfiguration globalConfig = GlobalGarbageConfiguration.builder()
                 .setResetDay(DayOfWeek.SUNDAY)
                 .setStart(LocalDate.parse("2019-01-01"))
+                .setGarbageEnabled(true)
+                .setRecyclingEnabled(true)
                 .setHolidays(LocalDate.parse("2019-12-25"), LocalDate.parse("2020-01-01"))
                 .build();
         Garbage classUnderTest = new Garbage(globalConfig,
@@ -167,6 +171,8 @@ class GarbageTest {
         final GlobalGarbageConfiguration globalConfig = GlobalGarbageConfiguration.builder()
                 .setResetDay(DayOfWeek.SUNDAY)
                 .setStart(LocalDate.parse("2019-01-01"))
+                .setGarbageEnabled(true)
+                .setRecyclingEnabled(true)
                 .setHolidays(LocalDate.parse("2019-12-25"), LocalDate.parse("2020-01-01"))
                 .build();
         Garbage classUnderTest = new Garbage(globalConfig,
@@ -181,6 +187,8 @@ class GarbageTest {
         final GlobalGarbageConfiguration globalConfig = GlobalGarbageConfiguration.builder()
                 .setResetDay(DayOfWeek.SUNDAY)
                 .setStart(LocalDate.parse("2019-05-01"))
+                .setGarbageEnabled(true)
+                .setRecyclingEnabled(true)
                 .setGarbageWeeks(FIRST_WEEK, SECOND_WEEK)
                 .setRecyclingWeeks(FIRST_WEEK, SECOND_WEEK)
                 .build();
@@ -189,5 +197,33 @@ class GarbageTest {
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-21"));
         assertThat(result.isGarbageDay(), is(false));
         assertThat(result.isRecyclingDay(), is(true));
+    }
+
+    @Test
+    void testGarbageDisabled() {
+        final GlobalGarbageConfiguration globalConfig = GlobalGarbageConfiguration.builder()
+                .setResetDay(DayOfWeek.SUNDAY)
+                .setStart(LocalDate.parse("2019-01-01"))
+                .setRecyclingEnabled(true)
+                .build();
+        Garbage classUnderTest = new Garbage(globalConfig,
+                new UserGarbageConfiguration(DayOfWeek.THURSDAY, null, null));
+        final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-16"));
+        assertThat(result.isGarbageDay(), is(false));
+        assertThat(result.isRecyclingDay(), is(true));
+    }
+
+    @Test
+    void testRecyclingDisabled() {
+        final GlobalGarbageConfiguration globalConfig = GlobalGarbageConfiguration.builder()
+                .setResetDay(DayOfWeek.SUNDAY)
+                .setStart(LocalDate.parse("2019-01-01"))
+                .setGarbageEnabled(true)
+                .build();
+        Garbage classUnderTest = new Garbage(globalConfig,
+                new UserGarbageConfiguration(DayOfWeek.THURSDAY, null, null));
+        final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-16"));
+        assertThat(result.isGarbageDay(), is(true));
+        assertThat(result.isRecyclingDay(), is(false));
     }
 }

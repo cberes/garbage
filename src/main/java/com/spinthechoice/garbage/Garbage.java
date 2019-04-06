@@ -64,8 +64,8 @@ public class Garbage {
         final DayOfWeek userDayOfWeek = userConfig.getDayOfWeek().plus(plusDays);
         final boolean dayOfWeekMatch = !isHoliday(date) && date.getDayOfWeek() == userDayOfWeek;
         return new GarbageDay(date,
-                dayOfWeekMatch && isUsersGarbageWeek(date),
-                dayOfWeekMatch && isUsersRecyclingWeek(date));
+                globalConfig.isGarbageEnabled() && dayOfWeekMatch && isUsersGarbageWeek(date),
+                globalConfig.isRecyclingEnabled() && dayOfWeekMatch && isUsersRecyclingWeek(date));
     }
 
     private boolean isHoliday(final LocalDate date) {

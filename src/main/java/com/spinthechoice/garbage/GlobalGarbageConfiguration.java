@@ -15,7 +15,9 @@ public final class GlobalGarbageConfiguration {
     public static class Builder {
         private DayOfWeek resetDay;
         private LocalDate start;
+        private boolean garbageEnabled;
         private List<String> garbageWeeks;
+        private boolean recyclingEnabled;
         private List<String> recyclingWeeks;
         private Set<LocalDate> leapDays;
         private Set<LocalDate> holidays;
@@ -49,6 +51,16 @@ public final class GlobalGarbageConfiguration {
         }
 
         /**
+         * Sets whether garbage pick-up is enabled.
+         * @param garbageEnabled {@code true} if garbage pick-up is enabled, {@code false} otherwise
+         * @return this builder instance
+         */
+        public Builder setGarbageEnabled(final boolean garbageEnabled) {
+            this.garbageEnabled = garbageEnabled;
+            return this;
+        }
+
+        /**
          * @see #setGarbageWeeks(List)
          */
         public Builder setGarbageWeeks(final String... garbageWeeks) {
@@ -62,6 +74,16 @@ public final class GlobalGarbageConfiguration {
          */
         public Builder setGarbageWeeks(final List<String> garbageWeeks) {
             this.garbageWeeks = garbageWeeks;
+            return this;
+        }
+
+        /**
+         * Sets whether recycling pick-up is enabled.
+         * @param recyclingEnabled {@code true} if recycling pick-up is enabled, {@code false} otherwise
+         * @return this builder instance
+         */
+        public Builder setRecyclingEnabled(final boolean recyclingEnabled) {
+            this.recyclingEnabled = recyclingEnabled;
             return this;
         }
 
@@ -119,7 +141,9 @@ public final class GlobalGarbageConfiguration {
 
     private final DayOfWeek resetDay;
     private final LocalDate start;
+    private final boolean garbageEnabled;
     private final List<String> garbageWeeks;
+    private final boolean recyclingEnabled;
     private final List<String> recyclingWeeks;
     private final Set<LocalDate> leapDays;
     private final Set<LocalDate> holidays;
@@ -127,7 +151,9 @@ public final class GlobalGarbageConfiguration {
     public GlobalGarbageConfiguration(final Builder builder) {
         this.resetDay = builder.resetDay;
         this.start = builder.start;
+        this.garbageEnabled = builder.garbageEnabled;
         this.garbageWeeks = builder.garbageWeeks;
+        this.recyclingEnabled = builder.recyclingEnabled;
         this.recyclingWeeks = builder.recyclingWeeks;
         this.leapDays = builder.leapDays;
         this.holidays = builder.holidays;
@@ -149,8 +175,16 @@ public final class GlobalGarbageConfiguration {
         return holidays;
     }
 
+    public boolean isGarbageEnabled() {
+        return garbageEnabled;
+    }
+
     public List<String> getGarbageWeeks() {
         return garbageWeeks;
+    }
+
+    public boolean isRecyclingEnabled() {
+        return recyclingEnabled;
     }
 
     public List<String> getRecyclingWeeks() {
