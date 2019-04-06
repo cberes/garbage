@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toSet;
+import static java.util.stream.IntStream.range;
 
 /**
  * Main garbage class.
@@ -65,7 +66,8 @@ public class Garbage {
         final boolean dayOfWeekMatch = !isHoliday(date) && date.getDayOfWeek() == userDayOfWeek;
         return new GarbageDay(date,
                 globalConfig.isGarbageEnabled() && dayOfWeekMatch && isUsersGarbageWeek(date),
-                globalConfig.isRecyclingEnabled() && dayOfWeekMatch && isUsersRecyclingWeek(date));
+                globalConfig.isRecyclingEnabled() && dayOfWeekMatch && isUsersRecyclingWeek(date),
+                dayOfWeekMatch && isUsersBulkWeek(date));
     }
 
     private boolean isHoliday(final LocalDate date) {
@@ -101,5 +103,13 @@ public class Garbage {
         final long daysSinceStart = DAYS.between(resetOnOrBeforeStart, date.plusDays(1));
         final double weeksSinceStart = daysSinceStart / (double) DAYS_PER_WEEK;
         return (int) Math.floor(weeksSinceStart) % weekCount;
+    }
+
+    private boolean isUsersBulkWeek(final LocalDate date) {
+        final Set<LocalDate> bulkDays = globalConfig.getBulkDays();
+        return bulkDays != null && !bulkDays.isEmpty() &&
+                range(0, DAYS_PER_WEEK)
+                        .mapToObj(date::minusDays)
+                        .anyMatch(bulkDays::contains);
     }
 }

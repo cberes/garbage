@@ -21,6 +21,7 @@ public final class GlobalGarbageConfiguration {
         private List<String> recyclingWeeks;
         private Set<LocalDate> leapDays;
         private Set<LocalDate> holidays;
+        private Set<LocalDate> bulkDays;
 
         /**
          * Creates a new configuration object.
@@ -137,6 +138,23 @@ public final class GlobalGarbageConfiguration {
             this.holidays = holidays;
             return this;
         }
+
+        /**
+         * @see #setBulkDays(Set)
+         */
+        public Builder setBulkDays(final LocalDate... bulkDays) {
+            return setBulkDays(new HashSet<>(asList(bulkDays)));
+        }
+
+        /**
+         * Sets bulk days.
+         * @param bulkDays first days of weeks when bulk garbage will be collected
+         * @return this builder instance
+         */
+        public Builder setBulkDays(final Set<LocalDate> bulkDays) {
+            this.bulkDays = bulkDays;
+            return this;
+        }
     }
 
     private final DayOfWeek resetDay;
@@ -147,6 +165,7 @@ public final class GlobalGarbageConfiguration {
     private final List<String> recyclingWeeks;
     private final Set<LocalDate> leapDays;
     private final Set<LocalDate> holidays;
+    private final Set<LocalDate> bulkDays;
 
     public GlobalGarbageConfiguration(final Builder builder) {
         this.resetDay = builder.resetDay;
@@ -157,6 +176,7 @@ public final class GlobalGarbageConfiguration {
         this.recyclingWeeks = builder.recyclingWeeks;
         this.leapDays = builder.leapDays;
         this.holidays = builder.holidays;
+        this.bulkDays = builder.bulkDays;
     }
 
     public DayOfWeek getResetDay() {
@@ -173,6 +193,10 @@ public final class GlobalGarbageConfiguration {
 
     public Set<LocalDate> getHolidays() {
         return holidays;
+    }
+
+    public Set<LocalDate> getBulkDays() {
+        return bulkDays;
     }
 
     public boolean isGarbageEnabled() {

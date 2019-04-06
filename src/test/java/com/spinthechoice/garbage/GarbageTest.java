@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,8 +22,7 @@ class GarbageTest {
         Garbage classUnderTest = new Garbage(globalConfig(),
                 new UserGarbageConfiguration(DayOfWeek.THURSDAY, null, FIRST_WEEK));
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-31"));
-        assertThat(result.isGarbageDay(), is(true));
-        assertThat(result.isRecyclingDay(), is(true));
+        assertGarbage(result, "GR");
     }
 
     private static GlobalGarbageConfiguration globalConfig() {
@@ -37,6 +37,7 @@ class GarbageTest {
                 .setGarbageWeeks(garbageWeeks)
                 .setRecyclingEnabled(true)
                 .setRecyclingWeeks(ALL_WEEKS)
+                .setBulkDays(emptySet())
                 .setLeapDays(
                         LocalDate.parse("2019-05-27"),
                         LocalDate.parse("2019-07-04"),
@@ -46,13 +47,22 @@ class GarbageTest {
                 .build();
     }
 
+    private static void assertNoGarbage(final GarbageDay garbage) {
+        assertGarbage(garbage, "");
+    }
+
+    private static void assertGarbage(final GarbageDay garbage, final String code) {
+        assertThat(garbage.isGarbageDay(), is(code.contains("G")));
+        assertThat(garbage.isRecyclingDay(), is(code.contains("R")));
+        assertThat(garbage.isBulkDay(), is(code.contains("B")));
+    }
+
     @Test
     void testOffOnLeapDay() {
         Garbage classUnderTest = new Garbage(globalConfig(),
                 new UserGarbageConfiguration(DayOfWeek.THURSDAY, null, FIRST_WEEK));
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-30"));
-        assertThat(result.isGarbageDay(), is(false));
-        assertThat(result.isRecyclingDay(), is(false));
+        assertNoGarbage(result);
     }
 
     @Test
@@ -61,8 +71,7 @@ class GarbageTest {
             Garbage classUnderTest = new Garbage(globalConfig(),
                     new UserGarbageConfiguration(dayOfWeek, null, FIRST_WEEK));
             final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-27"));
-            assertThat(result.isGarbageDay(), is(false));
-            assertThat(result.isRecyclingDay(), is(false));
+            assertNoGarbage(result);
         }
     }
 
@@ -71,8 +80,7 @@ class GarbageTest {
         Garbage classUnderTest = new Garbage(globalConfig(),
                 new UserGarbageConfiguration(DayOfWeek.THURSDAY, null, FIRST_WEEK));
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-16"));
-        assertThat(result.isGarbageDay(), is(true));
-        assertThat(result.isRecyclingDay(), is(true));
+        assertGarbage(result, "GR");
     }
 
     @Test
@@ -80,8 +88,7 @@ class GarbageTest {
         Garbage classUnderTest = new Garbage(globalConfig(),
                 new UserGarbageConfiguration(DayOfWeek.THURSDAY, null, FIRST_WEEK));
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-23"));
-        assertThat(result.isGarbageDay(), is(true));
-        assertThat(result.isRecyclingDay(), is(false));
+        assertGarbage(result, "G");
     }
 
     @Test
@@ -108,8 +115,7 @@ class GarbageTest {
         Garbage classUnderTest = new Garbage(globalConfig(),
                 new UserGarbageConfiguration(DayOfWeek.THURSDAY, null, FIRST_WEEK));
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-22"));
-        assertThat(result.isGarbageDay(), is(false));
-        assertThat(result.isRecyclingDay(), is(false));
+        assertNoGarbage(result);
     }
 
     @Test
@@ -117,8 +123,7 @@ class GarbageTest {
         Garbage classUnderTest = new Garbage(globalConfig(),
                 new UserGarbageConfiguration(DayOfWeek.SUNDAY, null, SECOND_WEEK));
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-06-02"));
-        assertThat(result.isGarbageDay(), is(true));
-        assertThat(result.isRecyclingDay(), is(true));
+        assertGarbage(result, "GR");
     }
 
     @Test
@@ -127,8 +132,7 @@ class GarbageTest {
             Garbage classUnderTest = new Garbage(globalConfig(),
                     new UserGarbageConfiguration(DayOfWeek.TUESDAY, null, week));
             final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-04-30"));
-            assertThat(result.isGarbageDay(), is(true));
-            assertThat(result.isRecyclingDay(), is(true));
+            assertGarbage(result, "GR");
         }
     }
 
@@ -137,8 +141,7 @@ class GarbageTest {
         Garbage classUnderTest = new Garbage(globalConfig(asList(FIRST_WEEK, SECOND_WEEK)),
                 new UserGarbageConfiguration(DayOfWeek.THURSDAY, FIRST_WEEK, FIRST_WEEK));
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-23"));
-        assertThat(result.isGarbageDay(), is(false));
-        assertThat(result.isRecyclingDay(), is(false));
+        assertNoGarbage(result);
     }
 
     @Test
@@ -146,8 +149,7 @@ class GarbageTest {
         Garbage classUnderTest = new Garbage(globalConfig(asList(FIRST_WEEK, SECOND_WEEK)),
                 new UserGarbageConfiguration(DayOfWeek.THURSDAY, SECOND_WEEK, SECOND_WEEK));
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-23"));
-        assertThat(result.isGarbageDay(), is(true));
-        assertThat(result.isRecyclingDay(), is(true));
+        assertGarbage(result, "GR");
     }
 
     @Test
@@ -162,8 +164,7 @@ class GarbageTest {
         Garbage classUnderTest = new Garbage(globalConfig,
                 new UserGarbageConfiguration(DayOfWeek.THURSDAY, null, null));
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-12-26"));
-        assertThat(result.isGarbageDay(), is(true));
-        assertThat(result.isRecyclingDay(), is(true));
+        assertGarbage(result, "GR");
     }
 
     @Test
@@ -178,8 +179,7 @@ class GarbageTest {
         Garbage classUnderTest = new Garbage(globalConfig,
                 new UserGarbageConfiguration(DayOfWeek.WEDNESDAY, null, null));
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-12-25"));
-        assertThat(result.isGarbageDay(), is(false));
-        assertThat(result.isRecyclingDay(), is(false));
+        assertNoGarbage(result);
     }
 
     @Test
@@ -195,8 +195,7 @@ class GarbageTest {
         Garbage classUnderTest = new Garbage(globalConfig,
                 new UserGarbageConfiguration(DayOfWeek.TUESDAY, FIRST_WEEK, SECOND_WEEK));
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-21"));
-        assertThat(result.isGarbageDay(), is(false));
-        assertThat(result.isRecyclingDay(), is(true));
+        assertGarbage(result, "R");
     }
 
     @Test
@@ -209,8 +208,7 @@ class GarbageTest {
         Garbage classUnderTest = new Garbage(globalConfig,
                 new UserGarbageConfiguration(DayOfWeek.THURSDAY, null, null));
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-16"));
-        assertThat(result.isGarbageDay(), is(false));
-        assertThat(result.isRecyclingDay(), is(true));
+        assertGarbage(result, "R");
     }
 
     @Test
@@ -223,7 +221,34 @@ class GarbageTest {
         Garbage classUnderTest = new Garbage(globalConfig,
                 new UserGarbageConfiguration(DayOfWeek.THURSDAY, null, null));
         final GarbageDay result = classUnderTest.compute(LocalDate.parse("2019-05-16"));
-        assertThat(result.isGarbageDay(), is(true));
-        assertThat(result.isRecyclingDay(), is(false));
+        assertGarbage(result, "G");
+    }
+
+    @Test
+    void testBulkOnSpecifiedDay() {
+        final GlobalGarbageConfiguration globalConfig = GlobalGarbageConfiguration.builder()
+                .setResetDay(DayOfWeek.SUNDAY)
+                .setStart(LocalDate.parse("2019-01-01"))
+                .setBulkDays(LocalDate.parse("2019-04-08"), LocalDate.parse("2019-09-16"))
+                .build();
+        Garbage classUnderTest = new Garbage(globalConfig,
+                new UserGarbageConfiguration(DayOfWeek.MONDAY, null, null));
+        assertNoGarbage(classUnderTest.compute(LocalDate.parse("2019-04-01")));
+        assertGarbage(classUnderTest.compute(LocalDate.parse("2019-04-08")), "B");
+        assertNoGarbage(classUnderTest.compute(LocalDate.parse("2019-04-15")));
+    }
+
+    @Test
+    void testBulkOnPreviousDay() {
+        final GlobalGarbageConfiguration globalConfig = GlobalGarbageConfiguration.builder()
+                .setResetDay(DayOfWeek.SUNDAY)
+                .setStart(LocalDate.parse("2019-01-01"))
+                .setBulkDays(LocalDate.parse("2019-04-08"), LocalDate.parse("2019-09-16"))
+                .build();
+        Garbage classUnderTest = new Garbage(globalConfig,
+                new UserGarbageConfiguration(DayOfWeek.SUNDAY, null, null));
+        assertNoGarbage(classUnderTest.compute(LocalDate.parse("2019-04-07")));
+        assertGarbage(classUnderTest.compute(LocalDate.parse("2019-04-14")), "B");
+        assertNoGarbage(classUnderTest.compute(LocalDate.parse("2019-04-21")));
     }
 }
