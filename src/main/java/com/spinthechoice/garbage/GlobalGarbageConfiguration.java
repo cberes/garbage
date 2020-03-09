@@ -19,8 +19,8 @@ public final class GlobalGarbageConfiguration {
         private List<String> garbageWeeks;
         private boolean recyclingEnabled;
         private List<String> recyclingWeeks;
-        private Set<LocalDate> leapDays;
-        private Set<LocalDate> holidays;
+        private Set<Holiday> leapDays;
+        private Set<Holiday> holidays;
         private Set<LocalDate> bulkDays;
 
         /**
@@ -108,7 +108,7 @@ public final class GlobalGarbageConfiguration {
         /**
          * @see #setLeapDays(Set)
          */
-        public Builder setLeapDays(final LocalDate... leapDays) {
+        public Builder setLeapDays(final Holiday... leapDays) {
             return setLeapDays(new HashSet<>(asList(leapDays)));
         }
 
@@ -117,7 +117,7 @@ public final class GlobalGarbageConfiguration {
          * @param leapDays days when collection is postponed until the following day
          * @return this builder instance
          */
-        public Builder setLeapDays(final Set<LocalDate> leapDays) {
+        public Builder setLeapDays(final Set<Holiday> leapDays) {
             this.leapDays = leapDays;
             return this;
         }
@@ -125,7 +125,7 @@ public final class GlobalGarbageConfiguration {
         /**
          * @see #setHolidays(Set)
          */
-        public Builder setHolidays(final LocalDate... holidays) {
+        public Builder setHolidays(final Holiday... holidays) {
             return setHolidays(new HashSet<>(asList(holidays)));
         }
 
@@ -134,7 +134,7 @@ public final class GlobalGarbageConfiguration {
          * @param holidays days when collection is canceled but not rescheduled
          * @return this builder instance
          */
-        public Builder setHolidays(final Set<LocalDate> holidays) {
+        public Builder setHolidays(final Set<Holiday> holidays) {
             this.holidays = holidays;
             return this;
         }
@@ -163,8 +163,8 @@ public final class GlobalGarbageConfiguration {
     private final List<String> garbageWeeks;
     private final boolean recyclingEnabled;
     private final List<String> recyclingWeeks;
-    private final Set<LocalDate> leapDays;
-    private final Set<LocalDate> holidays;
+    private final Set<Holiday> leapDays;
+    private final Set<Holiday> holidays;
     private final Set<LocalDate> bulkDays;
 
     public GlobalGarbageConfiguration(final Builder builder) {
@@ -187,11 +187,11 @@ public final class GlobalGarbageConfiguration {
         return start;
     }
 
-    public Set<LocalDate> getLeapDays() {
+    public Set<Holiday> getLeapDays() {
         return leapDays;
     }
 
-    public Set<LocalDate> getHolidays() {
+    public Set<Holiday> getHolidays() {
         return holidays;
     }
 

@@ -2,13 +2,12 @@ package com.spinthechoice.garbage;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toSet;
 import static java.util.stream.IntStream.range;
 
@@ -20,31 +19,18 @@ public class Garbage {
 
     private final GlobalGarbageConfiguration globalConfig;
     private final UserGarbageConfiguration userConfig;
-    private final Set<LocalDate> leapDays;
     private final LocalDate resetOnOrBeforeStart;
+    private final Set<LocalDate> holidays;
+    private int holidayYear;
+    private final Set<LocalDate> leapDays;
+    private int leapDayYear;
 
     public Garbage(final GlobalGarbageConfiguration globalConfig, final UserGarbageConfiguration userConfig) {
         this.globalConfig = globalConfig;
         this.userConfig = userConfig;
-        this.leapDays = getAllLeapDays(globalConfig);
         this.resetOnOrBeforeStart = getResetDayEqualOrBeforeStart(globalConfig);
-    }
-
-    private static Set<LocalDate> getAllLeapDays(final GlobalGarbageConfiguration config) {
-        return getLeapDays(config).stream()
-                .flatMap(holiday -> daysUntilReset(holiday, config.getResetDay()))
-                .collect(toSet());
-    }
-
-    private static Set<LocalDate> getLeapDays(final GlobalGarbageConfiguration config) {
-        return Optional.ofNullable(config.getLeapDays()).orElse(emptySet());
-    }
-
-    private static Stream<LocalDate> daysUntilReset(final LocalDate holiday, final DayOfWeek reset) {
-        // in JDK 9, could do this ...
-        // return Stream.iterate(holiday, day -> day.getDayOfWeek() != reset, day -> day.plusDays(1)).skip(1);
-        final DateResetIterable iterable = new DateResetIterable(holiday, reset);
-        return iterable.stream().skip(1);
+        this.holidays = new HashSet<>();
+        this.leapDays = new HashSet<>();
     }
 
     private static LocalDate getResetDayEqualOrBeforeStart(final GlobalGarbageConfiguration config) {
@@ -71,15 +57,39 @@ public class Garbage {
     }
 
     private boolean isHoliday(final LocalDate date) {
-        return getLeapDays(globalConfig).contains(date) || getHolidays(globalConfig).contains(date);
+        return getAllHolidaysInSameYear(date).contains(date);
     }
 
-    private static Set<LocalDate> getHolidays(final GlobalGarbageConfiguration config) {
-        return Optional.ofNullable(config.getHolidays()).orElse(emptySet());
+    private Set<LocalDate> getAllHolidaysInSameYear(final LocalDate date) {
+        if (holidayYear != date.getYear()) {
+            holidays.clear();
+            holidays.addAll(new Holidays(globalConfig.getHolidays()).dates(date.getYear()));
+            holidays.addAll(new Holidays(globalConfig.getLeapDays()).dates(date.getYear()));
+            holidayYear = date.getYear();
+        }
+        return holidays;
     }
 
     private boolean isLeapForward(final LocalDate date) {
-        return leapDays.contains(date);
+        return getAllLeapDaysInSameYear(date).contains(date);
+    }
+
+    private Set<LocalDate> getAllLeapDaysInSameYear(final LocalDate date) {
+        if (leapDayYear != date.getYear()) {
+            leapDays.clear();
+            leapDays.addAll(new Holidays(globalConfig.getLeapDays()).dates(date.getYear()).stream()
+                    .flatMap(holiday -> daysUntilReset(holiday, globalConfig.getResetDay()))
+                    .collect(toSet()));
+            leapDayYear = date.getYear();
+        }
+        return leapDays;
+    }
+
+    private static Stream<LocalDate> daysUntilReset(final LocalDate holiday, final DayOfWeek reset) {
+        // in JDK 9, could do this ...
+        // return Stream.iterate(holiday, day -> day.getDayOfWeek() != reset, day -> day.plusDays(1)).skip(1);
+        final DateResetIterable iterable = new DateResetIterable(holiday, reset);
+        return iterable.stream().skip(1);
     }
 
     private boolean isUsersGarbageWeek(final LocalDate date) {

@@ -39,11 +39,11 @@ class GarbageTest {
                 .setRecyclingWeeks(ALL_WEEKS)
                 .setBulkDays(emptySet())
                 .setLeapDays(
-                        LocalDate.parse("2019-05-27"),
-                        LocalDate.parse("2019-07-04"),
-                        LocalDate.parse("2019-09-02"),
-                        LocalDate.parse("2019-11-28"),
-                        LocalDate.parse("2019-12-25"))
+                        AmericanHolidays.memorialDay(),
+                        AmericanHolidays.independenceDay(),
+                        AmericanHolidays.laborDay(),
+                        AmericanHolidays.thanksgiving(),
+                        AmericanHolidays.christmas())
                 .build();
     }
 
@@ -159,7 +159,7 @@ class GarbageTest {
                 .setStart(LocalDate.parse("2019-01-01"))
                 .setGarbageEnabled(true)
                 .setRecyclingEnabled(true)
-                .setHolidays(LocalDate.parse("2019-12-25"), LocalDate.parse("2020-01-01"))
+                .setHolidays(AmericanHolidays.christmas(), AmericanHolidays.newYears())
                 .build();
         Garbage classUnderTest = new Garbage(globalConfig,
                 new UserGarbageConfiguration(DayOfWeek.THURSDAY, null, null));
@@ -174,7 +174,7 @@ class GarbageTest {
                 .setStart(LocalDate.parse("2019-01-01"))
                 .setGarbageEnabled(true)
                 .setRecyclingEnabled(true)
-                .setHolidays(LocalDate.parse("2019-12-25"), LocalDate.parse("2020-01-01"))
+                .setHolidays(AmericanHolidays.christmas(), AmericanHolidays.newYears())
                 .build();
         Garbage classUnderTest = new Garbage(globalConfig,
                 new UserGarbageConfiguration(DayOfWeek.WEDNESDAY, null, null));
