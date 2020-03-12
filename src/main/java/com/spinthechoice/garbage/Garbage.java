@@ -3,7 +3,6 @@ package com.spinthechoice.garbage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -100,13 +99,9 @@ public class Garbage {
         return isUsersWeek(date, globalConfig.getRecyclingWeeks(), userConfig.getRecyclingWeek());
     }
 
-    private boolean isUsersWeek(final LocalDate date, final List<String> weeks, final String usersWeek) {
-        return date.isBefore(globalConfig.getStart()) || weeks == null || weeks.size() <= 1 ||
-                getWeek(date, weeks).equals(usersWeek);
-    }
-
-    private String getWeek(final LocalDate date, final List<String> weeks) {
-        return weeks.get(getWeekIndex(date, weeks.size()));
+    private boolean isUsersWeek(final LocalDate date, final int weeks, final int usersWeek) {
+        return date.isBefore(globalConfig.getStart()) || weeks <= 1 ||
+                getWeekIndex(date, weeks) == usersWeek;
     }
 
     private int getWeekIndex(final LocalDate date, final int weekCount) {

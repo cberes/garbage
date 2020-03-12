@@ -3,7 +3,6 @@ package com.spinthechoice.garbage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
@@ -16,9 +15,9 @@ public final class GlobalGarbageConfiguration {
         private DayOfWeek resetDay;
         private LocalDate start;
         private boolean garbageEnabled;
-        private List<String> garbageWeeks;
+        private int garbageWeeks;
         private boolean recyclingEnabled;
-        private List<String> recyclingWeeks;
+        private int recyclingWeeks;
         private Set<Holiday> leapDays;
         private Set<Holiday> holidays;
         private Set<LocalDate> bulkDays;
@@ -62,18 +61,13 @@ public final class GlobalGarbageConfiguration {
         }
 
         /**
-         * @see #setGarbageWeeks(List)
-         */
-        public Builder setGarbageWeeks(final String... garbageWeeks) {
-            return setGarbageWeeks(asList(garbageWeeks));
-        }
-
-        /**
-         * Sets garbage weeks.
-         * @param garbageWeeks names of all garbage weeks (if more than 1)
+         * Sets the number of weeks in garbage rotation.
+         * A value of 1 implies garbage is collected every week.
+         * A value of 2 implies biweekly collection.
+         * @param garbageWeeks number of weeks in garbage rotation.
          * @return this builder instance
          */
-        public Builder setGarbageWeeks(final List<String> garbageWeeks) {
+        public Builder setGarbageWeeks(final int garbageWeeks) {
             this.garbageWeeks = garbageWeeks;
             return this;
         }
@@ -89,18 +83,13 @@ public final class GlobalGarbageConfiguration {
         }
 
         /**
-         * @see #setRecyclingWeeks(List)
-         */
-        public Builder setRecyclingWeeks(final String... recyclingWeeks) {
-            return setRecyclingWeeks(asList(recyclingWeeks));
-        }
-
-        /**
-         * Sets recycling weeks.
-         * @param recyclingWeeks names of all recycling weeks (if more than 1)
+         * Sets the number of weeks in recycling rotation.
+         * A value of 1 implies recycling is collected every week.
+         * A value of 2 implies biweekly collection.
+         * @param recyclingWeeks number of weeks in recycling rotation
          * @return this builder instance
          */
-        public Builder setRecyclingWeeks(final List<String> recyclingWeeks) {
+        public Builder setRecyclingWeeks(final int recyclingWeeks) {
             this.recyclingWeeks = recyclingWeeks;
             return this;
         }
@@ -160,9 +149,9 @@ public final class GlobalGarbageConfiguration {
     private final DayOfWeek resetDay;
     private final LocalDate start;
     private final boolean garbageEnabled;
-    private final List<String> garbageWeeks;
+    private final int garbageWeeks;
     private final boolean recyclingEnabled;
-    private final List<String> recyclingWeeks;
+    private final int recyclingWeeks;
     private final Set<Holiday> leapDays;
     private final Set<Holiday> holidays;
     private final Set<LocalDate> bulkDays;
@@ -203,7 +192,7 @@ public final class GlobalGarbageConfiguration {
         return garbageEnabled;
     }
 
-    public List<String> getGarbageWeeks() {
+    public int getGarbageWeeks() {
         return garbageWeeks;
     }
 
@@ -211,7 +200,7 @@ public final class GlobalGarbageConfiguration {
         return recyclingEnabled;
     }
 
-    public List<String> getRecyclingWeeks() {
+    public int getRecyclingWeeks() {
         return recyclingWeeks;
     }
 

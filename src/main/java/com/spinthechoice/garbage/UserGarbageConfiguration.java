@@ -7,16 +7,16 @@ import java.time.DayOfWeek;
  */
 public final class UserGarbageConfiguration {
     private final DayOfWeek dayOfWeek;
-    private final String garbageWeek;
-    private final String recyclingWeek;
+    private final int garbageWeek;
+    private final int recyclingWeek;
 
     /**
      * Creates a new configuration.
      * @param dayOfWeek the customer's day of week for collection
-     * @param garbageWeek week name if garbage is not collected every week
-     * @param recyclingWeek week name if recycling is not collected every week
+     * @param garbageWeek 0-based index of week of garbage collection (not used if collected every week)
+     * @param recyclingWeek 0-based index of week of recycling collection (not used if collected every week)
      */
-    public UserGarbageConfiguration(final DayOfWeek dayOfWeek, final String garbageWeek, final String recyclingWeek) {
+    public UserGarbageConfiguration(final DayOfWeek dayOfWeek, final int garbageWeek, final int recyclingWeek) {
         this.dayOfWeek = dayOfWeek;
         this.garbageWeek = garbageWeek;
         this.recyclingWeek = recyclingWeek;
@@ -26,11 +26,11 @@ public final class UserGarbageConfiguration {
         return dayOfWeek;
     }
 
-    public String getGarbageWeek() {
+    public int getGarbageWeek() {
         return garbageWeek;
     }
 
-    public String getRecyclingWeek() {
+    public int getRecyclingWeek() {
         return recyclingWeek;
     }
 }
