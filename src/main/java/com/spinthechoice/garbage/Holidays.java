@@ -41,7 +41,8 @@ public class Holidays {
         return rangeClosed(year - 1, year + 1)
                 .boxed()
                 .flatMap(y -> holidays.stream().map(holiday -> holiday.getType().toLocalDate(holiday, y)))
-                .filter(Objects::nonNull)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .filter(date -> date.getYear() == year)
                 .collect(toSet());
     }
