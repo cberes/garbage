@@ -65,12 +65,24 @@ class HolidaysTest {
     }
 
     @Test
-    void testNonexistentHoliday() {
+    void testNonexistentWeekBasedHoliday() {
         final Holidays holidays = new Holidays(Holiday.builder()
                 .setType(HolidayType.NTH_DAY_OF_WEEK)
                 .setMonth(Month.FEBRUARY)
                 .setDayOfWeek(DayOfWeek.SUNDAY)
                 .setWeekIndex(4)
+                .build());
+
+        final Set<LocalDate> dates = holidays.dates(2020);
+        assertThat(dates, hasSize(0));
+    }
+
+    @Test
+    void testNonexistentStaticDateHoliday() {
+        final Holidays holidays = new Holidays(Holiday.builder()
+                .setType(HolidayType.STATIC_DATE)
+                .setMonth(Month.FEBRUARY)
+                .setDate(50)
                 .build());
 
         final Set<LocalDate> dates = holidays.dates(2020);
