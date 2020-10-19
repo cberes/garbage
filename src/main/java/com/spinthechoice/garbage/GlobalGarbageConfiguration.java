@@ -95,6 +95,9 @@ public final class GlobalGarbageConfiguration {
         }
 
         /**
+         * Sets leap days.
+         * @param leapDays days when collection is postponed until the following day
+         * @return this builder instance
          * @see #setLeapDays(Set)
          */
         public Builder setLeapDays(final Holiday... leapDays) {
@@ -105,6 +108,7 @@ public final class GlobalGarbageConfiguration {
          * Sets leap days.
          * @param leapDays days when collection is postponed until the following day
          * @return this builder instance
+         * @see #setLeapDays(Holiday...)
          */
         public Builder setLeapDays(final Set<Holiday> leapDays) {
             this.leapDays = leapDays;
@@ -112,6 +116,9 @@ public final class GlobalGarbageConfiguration {
         }
 
         /**
+         * Sets holidays.
+         * @param holidays days when collection is canceled but not rescheduled
+         * @return this builder instance
          * @see #setHolidays(Set)
          */
         public Builder setHolidays(final Holiday... holidays) {
@@ -122,6 +129,7 @@ public final class GlobalGarbageConfiguration {
          * Sets holidays.
          * @param holidays days when collection is canceled but not rescheduled
          * @return this builder instance
+         * @see #setHolidays(Holiday...)
          */
         public Builder setHolidays(final Set<Holiday> holidays) {
             this.holidays = holidays;
@@ -129,6 +137,9 @@ public final class GlobalGarbageConfiguration {
         }
 
         /**
+         * Sets bulk days.
+         * @param bulkDays first days of weeks when bulk garbage will be collected
+         * @return this builder instance
          * @see #setBulkDays(Set)
          */
         public Builder setBulkDays(final LocalDate... bulkDays) {
@@ -139,6 +150,7 @@ public final class GlobalGarbageConfiguration {
          * Sets bulk days.
          * @param bulkDays first days of weeks when bulk garbage will be collected
          * @return this builder instance
+         * @see #setBulkDays(LocalDate...)
          */
         public Builder setBulkDays(final Set<LocalDate> bulkDays) {
             this.bulkDays = bulkDays;
