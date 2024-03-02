@@ -2,8 +2,8 @@
 
 Is it garbage day?
 
-[![Build Status](https://travis-ci.org/cberes/garbage.svg?branch=master)](https://travis-ci.org/cberes/garbage)
-[![Coverage Status](https://coveralls.io/repos/github/cberes/garbage/badge.svg?branch=master)](https://coveralls.io/github/cberes/garbage?branch=master)
+![build workflow](https://github.com/cberes/garbage/actions/workflows/build.yaml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/cberes/garbage/badge.svg?branch=main)](https://coveralls.io/github/cberes/garbage?branch=main)
 
 ## Features
 

@@ -1,0 +1,22 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ '8', '9', '11', '17', '21' ]
+    name: Build with Java ${{ matrix.java }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: ${{ matrix.java }}
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build project
+        run: ./gradlew clean build --no-daemon
+      - name: Coverage report
+        run: ./gradlew jacocoTestReport coveralls
