@@ -11,3 +11,6 @@ Is it garbage day?
 - Leap days
 - Biweekly pick-up
 
+## Project moved
+
+The project has moved to [Codeberg](https://codeberg.org/cberes/garbage).
